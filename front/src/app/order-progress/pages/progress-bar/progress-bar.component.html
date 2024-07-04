@@ -1,0 +1,156 @@
+<div class="items-start lg:ml-0 ml-5">
+  <p class="text-lg "><strong>Servicio: </strong>{{ datosOrden.operation.name }}</p>
+  <p class="text-lg "><strong>Mecánico: </strong>{{ datosOrden.mechanic.name }}</p>
+  <div class="flex">
+    <p class="text-lg"><strong>Estado:</strong>&nbsp;</p>
+    <p class="text-lg {{ getColorClass(datosOrden.statusOperation) }}">{{ mapEstado(datosOrden.statusOperation) }}</p>
+  </div>
+</div>
+
+@if(pasos.length>=8){
+  <div class="main p-4 overflow-x-auto lg:ml-0 lg:mr-0 ml-5 mr-5">
+    <ul>
+      <li *ngFor="let service of pasos; let i = index" [class.active]="i <= currentServiceIndex">
+
+        <div class="bloque1">
+          <div *ngIf="i < pasos.length" class="diagonal-text mb-10">
+            @if (i === 0 || i === pasos.length-1){
+              <p class="service-name text-white">.</p>
+            }
+            @if (i < pasos.length-1 && i > 0){
+              <p class="service-name text-black">{{service.name}}</p>
+            }
+          </div>
+        </div>
+
+
+        <div class="bloque2">
+          @if (i === 0){
+            <div class="progress-ball2" [class.active]="i < currentServiceIndex">
+              <i class="uil uil-check" *ngIf="service.complete"></i>
+            </div>
+          }
+          @if(i > 0 && i < pasos.length - 1){
+            <div class="progress" [class.active]="i < currentServiceIndex">
+              <i class="uil uil-check" *ngIf="service.complete"></i>
+            </div>
+          }
+          @if(i === pasos.length - 1){
+            <div  class="progress-ball" [class.active]="i < currentServiceIndex">
+              <i class="uil uil-check" *ngIf="service.complete"></i>
+            </div>
+          }
+          @if(i < pasos.length){
+            <div class="mt-2">
+              @if (i === 0 ){
+                <p class="text-black ml-1.5">{{service.name}}</p>
+              }
+              @if (i === pasos.length-1){
+                <p class="text-black ml-9">{{service.name}}</p>
+              }
+            </div>
+          }
+        </div>
+      </li>
+    </ul>
+  </div>
+
+
+} @else {
+  <div class="main p-4 overflow-x-auto lg:ml-0 lg:mr-0 ml-5 mr-5 lg:items-center">
+    <ul>
+      <li *ngFor="let service of pasos; let i = index" [class.active]="i <= currentServiceIndex">
+
+        <div class="bloque1">
+          <div *ngIf="i < pasos.length" class="diagonal-text mb-10">
+            @if (i === 0 || i === pasos.length-1){
+              <p class="service-name text-white">.</p>
+            }
+            @if (i < pasos.length-1 && i > 0){
+              <p class="service-name text-black">{{service.name}}</p>
+            }
+          </div>
+        </div>
+
+
+        <div class="bloque2">
+          @if (i === 0){
+            <div class="progress-ball2" [class.active]="i < currentServiceIndex">
+              <i class="uil uil-check" *ngIf="service.complete"></i>
+            </div>
+          }
+          @if(i > 0 && i < pasos.length - 1){
+            <div class="progress" [class.active]="i < currentServiceIndex">
+              <i class="uil uil-check" *ngIf="service.complete"></i>
+            </div>
+          }
+          @if(i === pasos.length - 1){
+            <div  class="progress-ball" [class.active]="i < currentServiceIndex">
+              <i class="uil uil-check" *ngIf="service.complete"></i>
+            </div>
+          }
+          @if(i < pasos.length){
+            <div class="mt-2">
+              @if (i === 0 ){
+                <p class="text-black mr-2">{{service.name}}</p>
+              }
+              @if (i === pasos.length-1){
+                <p class="text-black ml-9">{{service.name}}</p>
+              }
+            </div>
+          }
+        </div>
+      </li>
+    </ul>
+  </div>
+
+}
+
+<div class="main items-center">
+  <div class="flex lg:flex-row flex-col mt-10">
+
+    @if (datosOrden.statusOperation === 'En Proceso' || datosOrden.statusOperation === 'EN_PROCESO' ){
+      @if (currentServiceIndex < pasos.length - 1){
+        <div class="boton flex justify-center mt-5">
+          <button type="submit" class="text-black font-semibold inline-block" (click)="nextStep()">Siguiente Paso</button>
+        </div>
+      }
+    }
+
+    @if (datosOrden.statusOperation === 'En Proceso' || datosOrden.statusOperation === 'EN_PROCESO'){
+      <div class="botonfn flex justify-center mt-5">
+        <button type="submit" class="text-black font-semibold inline-block" (click)="openModal()" >Finalizar Orden</button>
+      </div>
+    }
+
+    @if(datosOrden.statusOperation === 'En Espera'  || datosOrden.statusOperation === 'EN_ESPERA') {
+      <div class="boton flex justify-center mt-5">
+        <button type="submit" class="text-black font-semibold inline-block" (click)="startOrder()">Empezar Orden</button>
+      </div>
+    }
+
+  </div>
+</div>
+
+@if (showModal){
+
+  <div class="fixed flex top-0 right-0 w-full h-full bg-gray-900 bg-opacity-80 justify-center items-center">
+
+    <div class="rounded-xs p-10 w-96" style="background: #B5B7B6">
+
+      <button class="top-2 ml-72 mb-5" (click)="closeModal()">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-black hover:text-gray-800" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+
+      <h3 class="text-2xl mb-4 font-semibold text-center text-black">¿Desea finalizar la orden?</h3>
+
+      <!-- Botón de guardar -->
+      <div class="flex items-center justify-center mr-24 ml-24">
+        <button type="button" class="text-xl text-black rounded-xl px-10 py-3 font-semibold inline-block mt-4" style="background: #F7941F" (click)="finishOrder()" >Aceptar</button>
+
+      </div>
+    </div>
+  </div>
+}

@@ -1,0 +1,12 @@
+*.tfstate
+*.tfstate.*
+
+*.tfplan
+*.lock.hcl
+
+**/.terraform/*
+
+/bin
+
+*.key
+*.key.*

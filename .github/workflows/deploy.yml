@@ -1,0 +1,40 @@
+name: Access EC2 Instance
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'microservices/**'
+      - '.github/workflows/deploy.yml'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up SSH key
+        run: |
+          echo "${{ secrets.EC2_SSH_KEY }}" > private_key.pem
+          chmod 600 private_key.pem
+
+      - name: SSH into EC2 Instance and run commands
+        run: |
+          ssh -o StrictHostKeyChecking=no -i private_key.pem ec2-user@${{ secrets.INSTANCE_IP }} << 'EOF'
+          cd /home/ec2-user
+          if [ -d "docker-mechanic" ]; then
+            sudo docker-compose down
+            sudo rm -rf docker-mechanic
+          fi
+          git clone https://github.com/RacoonDevRock/docker-mechanic.git
+          cd docker-mechanic
+          sudo docker-compose pull
+          sudo docker-compose up -d
+          EOF
+        shell: bash
+
+      - name: Clean up
+        run: rm private_key.pem
