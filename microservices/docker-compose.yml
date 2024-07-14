@@ -58,7 +58,7 @@ services:
       - monguito
     environment:
       EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://discovery:8761/eureka
-      MONGODB_URI: mongodb://root:129837465lg@monguito:27017/work_order_db?authSource=admin
+      MONGODB_URI: mongodb://root:<password>@monguito:27017/work_order_db?authSource=admin
     networks:
       - mechanic-net
 
@@ -70,7 +70,7 @@ services:
     container_name: mysql_container
     image: microservice-app-mysql-main
     environment:
-      MYSQL_ROOT_PASSWORD: 129837465lg
+      MYSQL_ROOT_PASSWORD: <root_password>
       MYSQL_DATABASE: principal_db
     ports:
       - "3307:3306"
@@ -88,7 +88,7 @@ services:
     container_name: mongo_container
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: 129837465lg
+      MONGO_INITDB_ROOT_PASSWORD: <root_password>
     ports:
       - "27018:27017"
     volumes:

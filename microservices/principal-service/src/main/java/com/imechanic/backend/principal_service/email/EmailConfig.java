@@ -11,26 +11,18 @@ import java.util.Properties;
 @Configuration
 public class EmailConfig {
 
-    private static final int GMAIL_SMTP_PORT = 587;
-
-    @Value("${spring.email.sender.host}")
-    private String host;
-
     @Value("${spring.email.sender.user}")
     private String user;
 
     @Value("${spring.email.sender.password}")
     private String password;
 
-    @Value("${spring.email.sender.debug}")
-    private Boolean debug;
-
     @Bean
     public JavaMailSender javaMailSender() {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
         // Set up Gmail config
-        mailSender.setHost(host);
-        mailSender.setPort(GMAIL_SMTP_PORT);
+        mailSender.setHost("smtp.gmail.com");
+        mailSender.setPort(587);
 
         // Set up email config (using udeesa email)
         mailSender.setUsername(user);

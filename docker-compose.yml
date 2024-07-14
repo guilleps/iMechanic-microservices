@@ -3,7 +3,7 @@ name: microservice-app
 
 services:
   discovery:
-    image: nombre-usuario/microservice-app-discovery-server
+    image: <nombre-usuario>/microservice-app-discovery-server
     container_name: discovery-server
     environment:
       EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://discovery:8761/eureka
@@ -13,7 +13,7 @@ services:
       - mechanic-net
 
   gateway:
-    image: nombre-usuario/microservice-app-api-gateway
+    image: <nombre-usuario>/microservice-app-api-gateway
     container_name: api-gateway
     ports:
       - "8080:8080"
@@ -26,12 +26,12 @@ services:
       - mechanic-net
 
   main:
-    image: nombre-usuario/microservice-app-principal-service
+    image: <nombre-usuario>/microservice-app-principal-service
     container_name: principal-service
     restart: on-failure
     environment:
       EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://discovery:8761/eureka
-      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/principal_db
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/<name_database>
       URL_FRONT: <URL_FRONT>
     depends_on:
       - db
@@ -41,7 +41,7 @@ services:
       - mechanic-net
 
   order:
-    image: nombre-usuario/microservice-app-order-service
+    image: <nombre-usuario>/microservice-app-order-service
     container_name: order-service
     restart: on-failure
     depends_on:
@@ -50,18 +50,18 @@ services:
       - discovery
     environment:
       EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://discovery:8761/eureka
-      MONGODB_URI: mongodb://root:129837465lg@monguito:27017/work_order_db?authSource=admin&retryWrites=true&w=majority&connectTimeoutMS=30000&socketTimeoutMS=30000
+      MONGODB_URI: mongodb://<user>:<password>@monguito:27017/<name_database>?authSource=admin&retryWrites=true&w=majority&connectTimeoutMS=30000&socketTimeoutMS=30000
     networks:
       - mechanic-net
       - monguito-net
 
   db:
     restart: always
-    image: nombre-usuario/microservice-app-mysql-main
+    image: <nombre-usuario>/microservice-app-mysql-main
     container_name: mysql-container
     environment:
-      MYSQL_ROOT_PASSWORD: 129837465lg
-      MYSQL_DATABASE: principal_db
+      MYSQL_ROOT_PASSWORD: <root_password>
+      MYSQL_DATABASE: <name_database>
     ports:
       - "3307:3306"
     volumes:
@@ -70,11 +70,11 @@ services:
       - mechanic-net
 
   monguito:
-    image: nombre-usuario/microservice-app-mongodb-order
+    image: <nombre-usuario>/microservice-app-mongodb-order
     container_name: mongodb-container
     environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: 129837465lg
+      MONGO_INITDB_ROOT_USERNAME: <password>
+      MONGO_INITDB_ROOT_PASSWORD: <name_database>
     ports:
       - "27018:27017"
     volumes:
