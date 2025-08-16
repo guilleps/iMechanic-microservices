@@ -63,11 +63,11 @@ export default class LoginUsersComponent {
         localStorage.setItem('role', response.role);
 
 
-        if (response.role == 'WORKSHOP') {
+        if (response.role === 'WORKSHOP') {
           this.router.navigate(['/workshop/workshop-info']);
-        } else if (response.role == 'CUSTOMER') {
+        } else if (response.role === 'CUSTOMER') {
           this.router.navigate(['/client/register-vehicles']);
-        } else if (response.role == 'MECHANIC') {
+        } else if (response.role === 'MECHANIC') {
           this.router.navigate(['/employee/order-list-employee']);
         }
       },

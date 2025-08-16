@@ -1,9 +1,9 @@
 import { NgForOf, NgIf } from '@angular/common';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import {ActivatedRoute, Router, RouterLink} from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { MecanicoPasoDTO } from '../../../interfaces/MecanicoPasoDTO';
 import { OrderDetailMecanicoDTO } from '../../../interfaces/OrderDetailMecanicoDTO';
-import {Subject, Subscription} from 'rxjs';
+import { Subscription } from 'rxjs';
 import { OrderService } from '../../../services/order.service';
 import { MechanicService } from '../../../services/mechanic.service';
 import { StepOrderResponse } from '../../../interfaces/StepOrderResponse';
@@ -53,18 +53,14 @@ export class ProgressBarComponent implements OnInit, OnDestroy {
   suscription: Subscription | undefined;
   suscription2: Subscription | undefined;
 
-
-
   constructor(
     private route: ActivatedRoute,
     private orderService: OrderService,
     private mechanicService: MechanicService,
     private router: Router
-) {
-  }
+  ) {}
 
   ngOnInit(): void {
-
     this.route.params.subscribe((params) => {
       const orderId = params['id'];
       // console.log(orderId);
@@ -152,7 +148,7 @@ export class ProgressBarComponent implements OnInit, OnDestroy {
     this.showModal = false;
   }
 
-   nextStep() {
+  nextStep() {
     if (this.currentServiceIndex < this.pasos.length) {
       // console.log('current:', this.currentServiceIndex);
       // console.log('pasos:', this.pasos.length);
@@ -175,7 +171,7 @@ export class ProgressBarComponent implements OnInit, OnDestroy {
           (error) => {
             console.error('Error al completar el paso:', error);
           }
-        )
+        );
     }
   }
 
@@ -213,7 +209,6 @@ export class ProgressBarComponent implements OnInit, OnDestroy {
   }
 
   finishOrder() {
-
     // console.log("preba del test3")
     const pasosRestantes = this.pasos.slice(this.currentServiceIndex);
 
@@ -226,7 +221,10 @@ export class ProgressBarComponent implements OnInit, OnDestroy {
         )
         .subscribe(
           (response) => {
-            console.log(`Paso ${index + this.currentServiceIndex + 1} completado:`, response);
+            console.log(
+              `Paso ${index + this.currentServiceIndex + 1} completado:`,
+              response
+            );
             paso.complete = true;
             this.currentServiceIndex++;
 

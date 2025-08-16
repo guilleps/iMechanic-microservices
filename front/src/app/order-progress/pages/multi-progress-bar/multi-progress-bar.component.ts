@@ -1,14 +1,7 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { NgForOf, NgIf } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
 import { MecanicoPasoDTO } from '../../../interfaces/MecanicoPasoDTO';
-import { Subscription } from 'rxjs';
 import { OrderDetailDTO } from '../../../interfaces/OrderDetailDTO';
-import { OrderService } from '../../../services/order.service';
-import { OperationDetailsDTOResponse } from '../../../interfaces/OperationDetailsDTOResponse';
-import { StepOrderResponse } from '../../../interfaces/StepOrderResponse';
-import { Subject } from 'rxjs';
-
 
 @Component({
   selector: 'app-multi-progress-bar',
@@ -17,7 +10,7 @@ import { Subject } from 'rxjs';
   templateUrl: './multi-progress-bar.component.html',
   styleUrl: './multi-progress-bar.component.css',
 })
-export class MultiProgressBarComponent  {
+export class MultiProgressBarComponent {
   @Input() mecanicoPaso: MecanicoPasoDTO = {
     workOrderId: '',
     mechanicId: 0,
