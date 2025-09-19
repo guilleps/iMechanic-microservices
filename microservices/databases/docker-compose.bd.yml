@@ -1,0 +1,39 @@
+services:
+  db:
+    build:
+      context: db-main
+      dockerfile: db-main/Dockerfile
+    restart: always
+    container_name: mysql_container
+    environment:
+      MYSQL_DATABASE: principal_db
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - iMechanic-network
+
+  monguito:
+    build:
+      context: db-order
+      dockerfile: db-order/Dockerfile
+    restart: always
+    container_name: mongo_container
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - iMechanic-network
+
+volumes:
+  mysql_data:
+  mongo_data:
+
+networks:
+  iMechanic-network:
