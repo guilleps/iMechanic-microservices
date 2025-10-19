@@ -2,8 +2,24 @@ version: '3.8'
 name: microservice-app
 
 services:
+  # Frontend Service
+  frontend:
+    build:
+      context: ./front
+      dockerfile: Dockerfile
+    container_name: frontend
+    ports:
+      - "4200:80"
+    depends_on:
+      - gateway
+    networks:
+      - mechanic-net
+
+  # Backend Services
   discovery:
-    image: <nombre-usuario>/microservice-app-discovery-server
+    build:
+      context: ./microservices/discovery-server
+      dockerfile: Dockerfile
     container_name: discovery-server
     environment:
       EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://discovery:8761/eureka
@@ -13,7 +29,9 @@ services:
       - mechanic-net
 
   gateway:
-    image: <nombre-usuario>/microservice-app-api-gateway
+    build:
+      context: ./microservices/api-gateway
+      dockerfile: Dockerfile
     container_name: api-gateway
     ports:
       - "8080:8080"
@@ -21,18 +39,20 @@ services:
       - discovery
     environment:
       EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://discovery:8761/eureka
-      URL_FRONT: <URL_FRONT>
+      URL_FRONT: http://frontend
     networks:
       - mechanic-net
 
   main:
-    image: <nombre-usuario>/microservice-app-principal-service
+    build:
+      context: ./microservices/principal-service
+      dockerfile: Dockerfile
     container_name: principal-service
     restart: on-failure
     environment:
       EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://discovery:8761/eureka
-      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/<name_database>
-      URL_FRONT: <URL_FRONT>
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/principal_db
+      URL_FRONT: http://frontend
     depends_on:
       - db
       - gateway
@@ -41,7 +61,9 @@ services:
       - mechanic-net
 
   order:
-    image: <nombre-usuario>/microservice-app-order-service
+    build:
+      context: ./microservices/order-service
+      dockerfile: Dockerfile
     container_name: order-service
     restart: on-failure
     depends_on:
@@ -50,18 +72,20 @@ services:
       - discovery
     environment:
       EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://discovery:8761/eureka
-      MONGODB_URI: mongodb://<user>:<password>@monguito:27017/<name_database>?authSource=admin&retryWrites=true&w=majority&connectTimeoutMS=30000&socketTimeoutMS=30000
+      MONGODB_URI: mongodb://root:${MONGO_INITDB_ROOT_PASSWORD}@monguito:27017/work_order_db?authSource=admin
     networks:
       - mechanic-net
       - monguito-net
 
   db:
+    build:
+      context: ./microservices/databases/db-main
+      dockerfile: Dockerfile
     restart: always
-    image: <nombre-usuario>/microservice-app-mysql-main
     container_name: mysql-container
     environment:
-      MYSQL_ROOT_PASSWORD: <root_password>
-      MYSQL_DATABASE: <name_database>
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-rootpass}
+      MYSQL_DATABASE: principal_db
     ports:
       - "3307:3306"
     volumes:
@@ -70,11 +94,14 @@ services:
       - mechanic-net
 
   monguito:
-    image: <nombre-usuario>/microservice-app-mongodb-order
+    build:
+      context: ./microservices/databases/db-order
+      dockerfile: Dockerfile
+    restart: always
     container_name: mongodb-container
     environment:
-      MONGO_INITDB_ROOT_USERNAME: <password>
-      MONGO_INITDB_ROOT_PASSWORD: <name_database>
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD:-mongopass}
     ports:
       - "27018:27017"
     volumes:
