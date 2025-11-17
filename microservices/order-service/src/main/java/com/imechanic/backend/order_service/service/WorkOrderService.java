@@ -19,7 +19,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -64,7 +66,7 @@ public class WorkOrderService {
             Long assignmentId = fetchAssignmentId(assignmentDTORequest);
 
             Task task = Task.builder()
-                    .workOrderId(workOrder.getId())
+                    .workOrder(workOrder)
                     .assignmentId(String.valueOf(assignmentId))
                     .build();
 
@@ -113,8 +115,8 @@ public class WorkOrderService {
 
         List<Task> tasks = taskService.getAllTasksByAssignmentId(assignmentIds);
 
-        List<String> workOrderIds = tasks.stream()
-                .map(Task::getWorkOrderId)
+        List<Long> workOrderIds = tasks.stream()
+                .map(task -> task.getWorkOrder().getId())
                 .collect(Collectors.toList());
 
         List<WorkOrder> workOrders = workOrderRepository.findAllById(workOrderIds);
@@ -282,7 +284,7 @@ public class WorkOrderService {
                 .findFirst()
                 .orElseThrow(() -> new ResourceNotFoundException("The mechanic is not assigned to the service on the work order."));
 
-        boolean stepCompleted = mechanicStepService.existsByTaskIdAndStepId(task.getId(), stepId.toString());
+        boolean stepCompleted = mechanicStepService.existsByTaskIdAndStepId(task.getId(), stepId);
         if (stepCompleted) {
             throw new StepCompletedException("Step with ID: " + stepId + " has been completed");
         }
@@ -331,7 +333,7 @@ public class WorkOrderService {
                 .findFirst()
                 .orElseThrow(() -> new ResourceNotFoundException("The mechanic is not assigned to the service on the work order."));
 
-        List<MechanicStep> mechanicStepsCompleted = mechanicStepService.findAllByTask(task.getId());
+        List<MechanicStep> mechanicStepsCompleted = mechanicStepService.findAllByTask(String.valueOf(task.getId()));
 
         return mechanicStepsCompleted.stream()
                 .map(mechanicStep -> new StepOrderResponse(
@@ -349,7 +351,7 @@ public class WorkOrderService {
         List<Task> tasks = workOrder.getTasks();
 
         List<MechanicStep> mechanicStepsCompleted = tasks.stream()
-                .flatMap(task -> mechanicStepService.findAllByTask(task.getId()).stream())
+                .flatMap(task -> mechanicStepService.findAllByTask(String.valueOf(task.getId())).stream())
                 .collect(Collectors.toList());
 
         return mechanicStepsCompleted.stream()
@@ -406,7 +408,7 @@ public class WorkOrderService {
     }
 
     private WorkOrder findWorkOrderById(String workOrderId) {
-        return workOrderRepository.findById(workOrderId)
+        return workOrderRepository.findById(Long.valueOf(workOrderId))
                 .orElseThrow(() -> new ResourceNotFoundException("WorkOrder with ID: " + workOrderId + " not found"));
     }
 

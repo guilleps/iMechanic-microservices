@@ -18,12 +18,12 @@ public class MechanicStepService {
         mechanicStepRepository.save(mechanicStep);
     }
 
-    public boolean existsByTaskIdAndStepId(String taskId, String stepId) {
-        return mechanicStepRepository.existsByTaskIdAndStepId(taskId, stepId);
+    public boolean existsByTaskIdAndStepId(Long taskId, Long stepId) {
+        return mechanicStepRepository.existsByTaskIdAndStepId(taskId, String.valueOf(stepId));
     }
 
     public List<MechanicStep> findAllByTask(String taskId) {
-        return mechanicStepRepository.findAllByTaskId(taskId);
+        return mechanicStepRepository.findAllByTaskId(Long.valueOf(taskId));
     }
 
     public boolean getCompleteStepByStepId(Long stepId) {

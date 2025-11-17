@@ -1,21 +1,31 @@
 package com.imechanic.backend.order_service.model;
 
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Entity
+@Table(name = "task")
 @Builder
-@Document(value = "task")
 public class Task {
 
     @Id
-    private String id;
-    private String workOrderId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     private String assignmentId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "work_order_id")
+    private WorkOrder workOrder;
+
+    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<MechanicStep> mechanicSteps;
 }

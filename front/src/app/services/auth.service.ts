@@ -39,6 +39,6 @@ export class AuthService {
   }
 
   confirmation(token: string): Observable<any> {
-    return this.http.get(`${this.baseUrl}/confirmar/${token}`);
+    return this.http.get(`${this.baseUrl}/confirmation/${token}`);
   }
 }

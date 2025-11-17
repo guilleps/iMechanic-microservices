@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CustomerWorkOrderDTOResponse {
-    private String id;
+    private Long id;
     private String plate;
     private String nameWorkshop;
     private String orderDate;

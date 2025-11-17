@@ -1,9 +1,9 @@
 package com.imechanic.backend.order_service.controller;
 
-import com.imechanic.backend.order_service.controller.request.*;
+import com.imechanic.backend.order_service.controller.request.WorkOrderDTORequest;
 import com.imechanic.backend.order_service.controller.response.*;
 import com.imechanic.backend.order_service.service.WorkOrderService;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -12,9 +12,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/orders")
-@RequiredArgsConstructor
 public class WorkOrderController {
-    private final WorkOrderService workOrderService;
+
+    @Autowired
+    private WorkOrderService workOrderService;
 
     // CREAR ORDEN DE TRABAJO
     @PostMapping("/crear")
@@ -77,8 +78,8 @@ public class WorkOrderController {
     @PutMapping("/{workOrderId}/service/{operationId}/paso/{stepId}/complete")
     @PreAuthorize("hasAuthority('MECHANIC')")
     public ResponseEntity<MechanicStepDTOResponse> completeTheOperationStep(@PathVariable String workOrderId,
-                                                         @PathVariable Long operationId,
-                                                         @PathVariable Long stepId) {
+                                                                            @PathVariable Long operationId,
+                                                                            @PathVariable Long stepId) {
         return ResponseEntity.ok(workOrderService.completeOperationStep(workOrderId, operationId, stepId));
     }
 

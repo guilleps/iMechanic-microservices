@@ -10,7 +10,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MechanicWorkOrderDetailsDTOResponse {
-    private String id;
+    private Long id;
     private String name;
     private String address;
     private String phoneWorkshop;
